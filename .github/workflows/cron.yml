@@ -60,7 +60,8 @@ jobs:
           OCI_CLI_TENANCY: ${{ secrets.OCI_CLI_TENANCY }}
           OCI_CLI_FINGERPRINT: ${{ secrets.OCI_CLI_FINGERPRINT }}
           OCI_CLI_PRIVATE_KEY: ${{ secrets.OCI_CLI_PRIVATE_KEY }}
-          OCI_CLI_REGION: ${{ secrets.OCI_CLI_REGION }}
+          OCI_CLI_REGION: ${{ secrets.OCI_CLI_REGION }} # ap-tokyo-1
+          OCI_CLI_REGION_ID: ${{ secrets.OCI_CLI_REGION_ID }} # Mwsj:AP-TOKYO-1-AD-1
           OCI_IMAGEID: ${{ secrets.OCI_IMAGEID }}
           OCI_SUBNETID: ${{ secrets.OCI_SUBNETID }}
           OCI_SHAPE: VM.Standard.A1.Flex
