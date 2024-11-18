@@ -13,6 +13,7 @@ jobs:
           ${OCI_CLI_PRIVATE_KEY}
           EOF
           cat > $HOME/.oci/config << EOF
+          [DEFAULT]
           user=${OCI_CLI_USER}
           fingerprint=${OCI_CLI_FINGERPRINT}
           key_file=$HOME/.oci/oci_api_key.pem
