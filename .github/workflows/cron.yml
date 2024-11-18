@@ -40,8 +40,9 @@ jobs:
           sudo apt-get -y update
           sudo apt -y install pipx
           sudo pipx install oci-cli
+          export PATH="${PATH}:/opt/pipx_bin"
           oci compute instance launch \
-            --availability-domain "${OCI_CLI_REGION}" \
+            --availability-domain "${OCI_CLI_REGION_ID}" \
             --compartment-id "${OCI_CLI_TENANCY}" \
             --boot-volume-size-in-gbs ${OCI_STORAGE_IN_GBS} \
             --shape "${OCI_SHAPE}" \
