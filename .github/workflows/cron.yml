@@ -9,7 +9,9 @@ jobs:
     steps:
       - run: |
           mkdir -p $HOME/.oci
-          cat > $HOME/.oci/oci_api_key.pem
+          cat > $HOME/.oci/oci_api_key.pem << EOF
+          ${OCI_CLI_PRIVATE_KEY}
+          EOF
           cat > $HOME/.oci/config << EOF
           user=${OCI_CLI_USER}
           fingerprint=${OCI_CLI_FINGERPRINT}
