@@ -1,8 +1,5 @@
 on: 
   workflow_dispatch:
-  schedule:
-    # https://stackoverflow.com/questions/59560214/github-action-works-on-push-but-not-scheduled
-    - cron: '*/15 * * * *'
 
 jobs:
   create:
