@@ -1,0 +1,68 @@
+on: 
+  workflow_dispatch:
+  schedule:
+    - cron: '* * * * *'
+
+jobs:
+  create:
+    runs-on: ubuntu-latest
+    steps:
+      - run: |
+          mkdir -p $HOME/.oci
+          cat > $HOME/.oci/oci_api_key.pem
+          cat > $HOME/.oci/config << EOF
+          user=${OCI_CLI_USER}
+          fingerprint=${OCI_CLI_FINGERPRINT}
+          key_file=$HOME/.oci/oci_api_key.pem
+          tenancy=${OCI_CLI_TENANCY}
+          region=${OCI_CLI_REGION}
+          EOF
+          cat > $HOME/.oci/availabilityConfig.json << EOF
+          {
+            "recoveryAction": "RESTORE_INSTANCE"
+          }
+          EOF
+          cat > $HOME/.oci/instanceOptions.json << EOF
+          {
+            "areLegacyImdsEndpointsDisabled": false
+          }
+          EOF
+          cat > $HOME/.oci/shapeConfig.json << EOF
+          {
+            "ocpus": 1,
+            "memoryInGBs": 6
+          }
+          EOF
+          cat > $HOME/.oci/ssh-key.pub << EOF
+          ${OCI_SSH_PUBLIC_KEY}
+          EOF
+
+          sudo apt-get -y update
+          sudo apt -y install pipx
+          sudo pipx install oci-cli
+          oci compute instance launch \
+            --availability-domain "${OCI_CLI_REGION}" \
+            --compartment-id "${OCI_CLI_TENANCY}" \
+            --boot-volume-size-in-gbs ${OCI_STORAGE_IN_GBS} \
+            --shape "${OCI_SHAPE}" \
+            --subnet-id "${OCI_SUBNETID}" \
+            --assign-private-dns-record true \
+            --assign-public-ip false \
+            --availability-config file://$HOME/.oci/availabilityConfig.json \
+            --display-name "${OCI_INSTANCE_NAME}-$(date +%s)" \
+            --image-id "${OCI_IMAGEID}" \
+            --instance-options file://$HOME/.oci/instanceOptions.json \
+            --shape-config file://$HOME/.oci/shapeConfig.json \
+            --ssh-authorized-keys-file $HOME/.oci/ssh-key.pub
+        env:
+          OCI_SSH_PUBLIC_KEY: ${{ secrets.OCI_SSH_PUBLIC_KEY }}
+          OCI_CLI_USER: ${{ secrets.OCI_CLI_USER }}
+          OCI_CLI_TENANCY: ${{ secrets.OCI_CLI_TENANCY }}
+          OCI_CLI_FINGERPRINT: ${{ secrets.OCI_CLI_FINGERPRINT }}
+          OCI_CLI_PRIVATE_KEY: ${{ secrets.OCI_CLI_PRIVATE_KEY }}
+          OCI_CLI_REGION: ${{ secrets.OCI_CLI_REGION }}
+          OCI_IMAGEID: ${{ secrets.OCI_IMAGEID }}
+          OCI_SUBNETID: ${{ secrets.OCI_SUBNETID }}
+          OCI_SHAPE: VM.Standard.A1.Flex
+          OCI_STORAGE_IN_GBS: 50
+          OCI_INSTANCE_NAME: A1-Flex
